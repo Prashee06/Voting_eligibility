@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Voting Eligibility Checker</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #e8f4ff,
+                    #dbeafe,
+                    #eef2ff
+                );
+
+            padding: 20px;
+        }
+
+
+        /* Main Card */
+
+        .container {
+
+            width: 100%;
+            max-width: 440px;
+
+            background: rgba(255, 255, 255, 0.95);
+
+            padding: 38px;
+
+            border-radius: 22px;
+
+            box-shadow:
+                0 20px 45px rgba(30, 64, 175, 0.15);
+
+            border: 1px solid rgba(255, 255, 255, 0.8);
+
+            backdrop-filter: blur(10px);
+        }
+
+
+        /* Header */
+
+        .title-section {
+
+            text-align: center;
+
+            margin-bottom: 32px;
+        }
+
+
+        .logo {
+
+            width: 78px;
+            height: 78px;
+
+            margin: 0 auto 15px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 42px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #4f46e5
+                );
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 10px 20px rgba(37, 99, 235, 0.25);
+        }
+
+
+        .title-section h1 {
+
+            margin: 0;
+
+            font-size: 27px;
+
+            font-weight: 700;
+
+            color: #172554;
+        }
+
+
+        .subtitle {
+
+            margin-top: 8px;
+
+            color: #64748b;
+
+            font-size: 14px;
+        }
+
+
+        /* Form */
+
+        .form-group {
+
+            margin-bottom: 20px;
+        }
+
+
+        label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            color: #334155;
+        }
+
+
+        input,
+        select {
+
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 10px;
+
+            background: #f8fafc;
+
+            color: #1e293b;
+
+            font-size: 15px;
+
+            transition: all 0.2s ease;
+        }
+
+
+        input::placeholder {
+
+            color: #94a3b8;
+        }
+
+
+        input:focus,
+        select:focus {
+
+            outline: none;
+
+            background: white;
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+
+        /* Button */
+
+        button {
+
+            width: 100%;
+
+            margin-top: 8px;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #4f46e5
+                );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 8px 18px rgba(37, 99, 235, 0.25);
+
+            transition: all 0.2s ease;
+        }
+
+
+        button:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 22px rgba(37, 99, 235, 0.30);
+        }
+
+
+        button:active {
+
+            transform: translateY(0);
+        }
+
+
+        /* Result */
+
+        #result {
+
+            margin-top: 22px;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            text-align: center;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+
+            font-weight: 600;
+
+            display: none;
+        }
+
+
+        .success {
+
+            background: #ecfdf5;
+
+            color: #047857;
+
+            border: 1px solid #a7f3d0;
+        }
+
+
+        .error {
+
+            background: #fef2f2;
+
+            color: #b91c1c;
+
+            border: 1px solid #fecaca;
+        }
+
+
+        /* Other Country */
+
+        #otherCountry {
+
+            margin-top: 10px;
+        }
+
+
+        /* Footer */
+
+        .footer {
+
+            text-align: center;
+
+            margin-top: 25px;
+
+            font-size: 12px;
+
+            color: #94a3b8;
+        }
+
+
+        /* Mobile */
+
+        @media (max-width: 480px) {
+
+            .container {
+
+                padding: 28px 22px;
+
+                border-radius: 18px;
+            }
+
+            .title-section h1 {
+
+                font-size: 24px;
+            }
+
+            .logo {
+
+                width: 68px;
+                height: 68px;
+
+                font-size: 36px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- HEADER -->
+
+    <div class="title-section">
+
+        <div class="logo">
+            🗳️
+        </div>
+
+        <h1>
+            Voting Eligibility Checker
+        </h1>
+
+        <div class="subtitle">
+            Check your eligibility in seconds
+        </div>
+
+    </div>
+
+
+
+    <!-- FORM -->
+
+    <form id="votingForm">
+
+
+        <!-- NAME -->
+
+        <div class="form-group">
+
+            <label for="name">
+                Full Name
+            </label>
+
+            <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Enter your full name"
+                required
+            >
+
+        </div>
+
+
+
+        <!-- AGE -->
+
+        <div class="form-group">
+
+            <label for="age">
+                Age
+            </label>
+
+            <input
+                type="number"
+                id="age"
+                name="age"
+                placeholder="Enter your age"
+                min="1"
+                max="120"
+                required
+            >
+
+        </div>
+
+
+
+        <!-- COUNTRY -->
+
+        <div class="form-group">
+
+            <label for="citizenship">
+                Country
+            </label>
+
+            <select
+                id="citizenship"
+                name="citizenship"
+                required
+            >
+
+                <option value="">
+                    Select your country
+                </option>
+
+                <option value="Indian">
+                    India
+                </option>
+
+                <option value="United States">
+                    United States
+                </option>
+
+                <option value="United Kingdom">
+                    United Kingdom
+                </option>
+
+                <option value="Canada">
+                    Canada
+                </option>
+
+                <option value="Australia">
+                    Australia
+                </option>
+
+                <option value="Germany">
+                    Germany
+                </option>
+
+                <option value="France">
+                    France
+                </option>
+
+                <option value="Japan">
+                    Japan
+                </option>
+
+                <option value="China">
+                    China
+                </option>
+
+                <option value="South Korea">
+                    South Korea
+                </option>
+
+                <option value="Singapore">
+                    Singapore
+                </option>
+
+                <option value="Malaysia">
+                    Malaysia
+                </option>
+
+                <option value="Sri Lanka">
+                    Sri Lanka
+                </option>
+
+                <option value="Nepal">
+                    Nepal
+                </option>
+
+                <option value="Bangladesh">
+                    Bangladesh
+                </option>
+
+                <option value="Pakistan">
+                    Pakistan
+                </option>
+
+                <option value="United Arab Emirates">
+                    United Arab Emirates
+                </option>
+
+                <option value="Saudi Arabia">
+                    Saudi Arabia
+                </option>
+
+                <option value="South Africa">
+                    South Africa
+                </option>
+
+                <option value="Brazil">
+                    Brazil
+                </option>
+
+                <option value="Russia">
+                    Russia
+                </option>
+
+                <option value="Italy">
+                    Italy
+                </option>
+
+                <option value="Spain">
+                    Spain
+                </option>
+
+                <option value="New Zealand">
+                    New Zealand
+                </option>
+
+                <option value="Other">
+                    Other
+                </option>
+
+            </select>
+
+
+            <input
+                type="text"
+                id="otherCountry"
+                placeholder="Enter your country name"
+                style="display: none;"
+            >
+
+        </div>
+
+
+
+        <!-- BUTTON -->
+
+        <button type="submit">
+            Check Eligibility
+        </button>
+
+
+    </form>
+
+
+
+    <!-- RESULT -->
+
+    <div id="result"></div>
+
+
+
+    <!-- FOOTER -->
+
+    <div class="footer">
+        Voting Eligibility Verification System
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+    /* Country */
+
+    const citizenshipSelect =
+        document.getElementById("citizenship");
+
+
+    const otherCountry =
+        document.getElementById("otherCountry");
+
+
+
+    citizenshipSelect.addEventListener(
+        "change",
+        function()
+        {
+
+            if (this.value === "Other")
+            {
+
+                otherCountry.style.display =
+                    "block";
+
+                otherCountry.required =
+                    true;
+
+            }
+
+            else
+            {
+
+                otherCountry.style.display =
+                    "none";
+
+                otherCountry.required =
+                    false;
+
+                otherCountry.value =
+                    "";
+
+            }
+
+        }
+    );
+
+
+
+    /* Form */
+
+    document
+        .getElementById("votingForm")
+        .addEventListener(
+            "submit",
+            async function(event)
+            {
+
+                event.preventDefault();
+
+
+                const name =
+                    document
+                        .getElementById("name")
+                        .value;
+
+
+                const age =
+                    document
+                        .getElementById("age")
+                        .value;
+
+
+                let citizenship =
+                    citizenshipSelect.value;
+
+
+                if (citizenship === "Other")
+                {
+
+                    citizenship =
+                        otherCountry.value.trim();
+
+                }
+
+
+                const result =
+                    document.getElementById("result");
+
+
+                const formData =
+                    new URLSearchParams();
+
+
+                formData.append(
+                    "name",
+                    name
+                );
+
+
+                formData.append(
+                    "age",
+                    age
+                );
+
+
+                formData.append(
+                    "citizenship",
+                    citizenship
+                );
+
+
+                try
+                {
+
+                    const response =
+                        await fetch(
+                            "http://localhost:9090/check",
+                            {
+
+                                method: "POST",
+
+                                headers:
+                                {
+                                    "Content-Type":
+                                        "application/x-www-form-urlencoded"
+                                },
+
+                                body:
+                                    formData.toString()
+
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    result.style.display =
+                        "block";
+
+
+                    result.textContent =
+                        data.message;
+
+
+                    if (data.eligible)
+                    {
+
+                        result.className =
+                            "success";
+
+                    }
+
+                    else
+                    {
+
+                        result.className =
+                            "error";
+
+                    }
+
+                }
+
+                catch (error)
+                {
+
+                    result.style.display =
+                        "block";
+
+                    result.className =
+                        "error";
+
+                    result.textContent =
+                        "Unable to connect to the C++ server. Please start the server.";
+
+                }
+
+            }
+        );
+
+</script>
+
+
+</body>
+
+</html>
