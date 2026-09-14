@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE = 'prasheetha06/voting-eligibility'
+    }
+
     stages {
 
         stage('Checkout') {
@@ -25,7 +29,7 @@ pipeline {
                 echo 'Building Docker image...'
 
                 bat '''
-                    docker build -t voting-eligibility:latest .
+                    docker build -t %DOCKER_IMAGE%:latest .
                 '''
             }
         }
@@ -36,11 +40,31 @@ pipeline {
 
                 bat '''
                     docker rm -f voting-jenkins-test 2>nul || exit /b 0
-                    docker run -d -p 9091:9090 --name voting-jenkins-test voting-eligibility:latest
+                    docker run -d -p 9091:9090 --name voting-jenkins-test %DOCKER_IMAGE%:latest
                     timeout /t 5 /nobreak
                     docker ps
                     docker rm -f voting-jenkins-test
                 '''
+            }
+        }
+
+        stage('Push to DockerHub') {
+            steps {
+                echo 'Logging in to DockerHub and pushing image...'
+
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'voting-dockerhub-credentials',
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_PASSWORD'
+                    )
+                ]) {
+                    bat '''
+                        docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%
+                        docker push %DOCKER_IMAGE%:latest
+                        docker logout
+                    '''
+                }
             }
         }
     }
