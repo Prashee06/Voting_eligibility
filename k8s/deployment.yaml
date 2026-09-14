@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: voting-eligibility
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: voting-eligibility
+  template:
+    metadata:
+      labels:
+        app: voting-eligibility
+    spec:
+      containers:
+        - name: voting-eligibility
+          image: prasheetha06/voting-eligibility:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9090
